@@ -37,7 +37,21 @@ class _MyHomePageState extends State<HomePage> {
     });
   }
 
-  void onRemove(int index) {}
+  void onRemove(int index) {
+    String taskNameToBeRemoved = cubit.todos[index];
+    cubit.removeTodo(index: index);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '"$taskNameToBeRemoved" task removed.',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +80,12 @@ class _MyHomePageState extends State<HomePage> {
               } else if (state is LoadedTodoState) {
                 return TodosList(
                   todos: state.todos,
-                  onRemove: (id) => cubit.removeTodo(index: id),
+                  onRemove: onRemove,
                 );
               } else {
                 return TodosList(
                   todos: cubit.todos,
-                  onRemove: (id) => cubit.removeTodo(index: id),
+                  onRemove: onRemove,
                 );
               }
             },
@@ -111,9 +125,27 @@ class _MyHomePageState extends State<HomePage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        cubit.addTodo(todo: _nameController.value.text);
-                        _nameController.clear();
-                        FocusManager.instance.primaryFocus?.unfocus();
+                        if (_nameController.value.text.isNotEmpty) {
+                          cubit.addTodo(todo: _nameController.value.text);
+                          _nameController.clear();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.errorContainer,
+                              content: Text(
+                                'Enter a valid task name',
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onErrorContainer,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
                       },
                       child: CircleAvatar(
                         backgroundColor: Theme.of(context).primaryColor,
