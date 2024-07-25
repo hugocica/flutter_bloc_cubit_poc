@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:cubit_poc/app/pages/home/cubits/todo_states.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TodoCubit extends Cubit<TodoState> {
   final List<String> _todos = [];
